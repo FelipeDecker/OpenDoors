@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="SistemaGestaoLar.Api.Client/SistemaGestaoLar.Api.Client.csproj" />
+  <Project Path="SistemaGestaoLar.Api/SistemaGestaoLar.Api.csproj" />
+  <Project Path="SistemaGestaoLar.Front/SistemaGestaoLar.Front.csproj" />
+</Solution>
