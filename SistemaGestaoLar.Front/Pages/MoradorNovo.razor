@@ -1,0 +1,78 @@
+@page "/moradores/novo"
+@using System.ComponentModel.DataAnnotations
+@inject IMoradoresClient MoradoresClient
+@inject NavigationManager NavigationManager
+
+<PageTitle>Novo morador</PageTitle>
+
+<h1>Novo morador</h1>
+
+@if (mensagemErro is not null)
+{
+    <div class="alert alert-danger" role="alert">
+        @mensagemErro
+    </div>
+}
+
+<EditForm Model="modelo" OnValidSubmit="AdicionarAsync">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="nomeCompleto" class="form-label">Nome completo</label>
+        <InputText id="nomeCompleto" class="form-control" @bind-Value="modelo.NomeCompleto" />
+    </div>
+
+    <div class="mb-3">
+        <label for="dataNascimento" class="form-label">Data de nascimento</label>
+        <InputDate id="dataNascimento" class="form-control" @bind-Value="modelo.DataNascimento" />
+    </div>
+
+    <div class="mb-3">
+        <label for="contatoEmergencia" class="form-label">Contato de emergência</label>
+        <InputText id="contatoEmergencia" class="form-control" @bind-Value="modelo.ContatoEmergencia" />
+    </div>
+
+    <div class="mb-3">
+        <label for="observacoes" class="form-label">Observações</label>
+        <InputTextArea id="observacoes" class="form-control" @bind-Value="modelo.Observacoes" />
+    </div>
+
+    <div class="mb-3">
+        <label for="historicoAcolhimento" class="form-label">Histórico de acolhimento</label>
+        <InputTextArea id="historicoAcolhimento" class="form-control" @bind-Value="modelo.HistoricoAcolhimento" />
+    </div>
+
+    <button type="submit" class="btn btn-primary" disabled="@salvando">Adicionar</button>
+    <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+</EditForm>
+
+@code {
+    private MoradorModel modelo = new();
+    private bool salvando;
+    private string? mensagemErro;
+
+    private async Task AdicionarAsync()
+    {
+        salvando = true;
+        mensagemErro = null;
+        try
+        {
+            await MoradoresClient.CreateAsync(modelo);
+            NavigationManager.NavigateTo("/moradores");
+        }
+        catch (Exception)
+        {
+            mensagemErro = "Não foi possível adicionar o morador.";
+        }
+        finally
+        {
+            salvando = false;
+        }
+    }
+
+    private void Cancelar()
+    {
+        NavigationManager.NavigateTo("/moradores");
+    }
+}

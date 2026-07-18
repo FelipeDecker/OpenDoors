@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using SistemaGestaoLar.Api.Entities;
 using SistemaGestaoLar.Api.Models;
 using SistemaGestaoLar.Api.Services;
-using SistemaGestaoLar.Api.Entities;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace SistemaGestaoLar.Api.Controllers
 {

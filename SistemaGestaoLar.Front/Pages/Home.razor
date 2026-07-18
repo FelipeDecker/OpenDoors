@@ -1,3 +1,35 @@
 ﻿@page "/"
+@inject NavigationManager NavigationManager
 
 <PageTitle>Home</PageTitle>
+
+<div class="d-flex flex-column align-items-center justify-content-center text-center" style="margin-top: 15vh;">
+    <h3 class="mb-3">Acessar ticket diário</h3>
+    <EditForm Model="this" OnValidSubmit="IrParaTicket" class="d-flex" style="max-width: 320px; width: 100%;">
+        <input type="number" min="1" class="form-control me-2" placeholder="Número do ticket" @bind-value="ticketId" @bind-value:event="oninput" />
+        <button type="submit" class="btn btn-primary">Ir</button>
+    </EditForm>
+    @if (mensagemErro is not null)
+    {
+        <div class="alert alert-danger mt-3" role="alert">
+            @mensagemErro
+        </div>
+    }
+</div>
+
+@code {
+    private int? ticketId;
+    private string? mensagemErro;
+
+    private void IrParaTicket()
+    {
+        if (ticketId is null || ticketId <= 0)
+        {
+            mensagemErro = "Informe um número de ticket válido.";
+            return;
+        }
+
+        mensagemErro = null;
+        NavigationManager.NavigateTo($"/tickets-diarios/editar/{ticketId}");
+    }
+}

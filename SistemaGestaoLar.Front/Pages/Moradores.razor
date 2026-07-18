@@ -1,9 +1,14 @@
 @page "/moradores"
 @inject IMoradoresClient MoradoresClient
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Moradores</PageTitle>
 
-<h1>Moradores</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Moradores</h1>
+    <button type="button" class="btn btn-primary" @onclick="NovoMorador">Novo morador</button>
+</div>
 
 @if (carregando)
 {
@@ -30,6 +35,7 @@ else
                     <th scope="col">Contato de emergência</th>
                     <th scope="col">Observações</th>
                     <th scope="col">Histórico de acolhimento</th>
+                    <th scope="col">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -41,6 +47,10 @@ else
                         <td>@morador.ContatoEmergencia</td>
                         <td>@morador.Observacoes</td>
                         <td>@morador.HistoricoAcolhimento</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-primary me-1" @onclick="() => EditarMorador(morador.Id)">Editar</button>
+                            <button type="button" class="btn btn-sm btn-outline-danger" @onclick="() => ExcluirMoradorAsync(morador)">Excluir</button>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -66,6 +76,35 @@ else
         finally
         {
             carregando = false;
+        }
+    }
+
+    private void NovoMorador()
+    {
+        NavigationManager.NavigateTo("/moradores/novo");
+    }
+
+    private void EditarMorador(int id)
+    {
+        NavigationManager.NavigateTo($"/moradores/editar/{id}");
+    }
+
+    private async Task ExcluirMoradorAsync(MoradorModel morador)
+    {
+        var confirmado = await JSRuntime.InvokeAsync<bool>("confirm", $"Deseja realmente excluir o morador \"{morador.NomeCompleto}\"?");
+        if (!confirmado)
+        {
+            return;
+        }
+
+        try
+        {
+            await MoradoresClient.DeleteAsync(morador.Id);
+            moradores.Remove(morador);
+        }
+        catch (Exception)
+        {
+            mensagemErro = "Não foi possível excluir o morador.";
         }
     }
 }

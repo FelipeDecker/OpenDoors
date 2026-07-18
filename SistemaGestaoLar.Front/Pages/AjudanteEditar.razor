@@ -1,0 +1,115 @@
+@page "/ajudantes/editar/{Id:int}"
+@using System.ComponentModel.DataAnnotations
+@inject IAjudantesClient AjudantesClient
+@inject NavigationManager NavigationManager
+
+<PageTitle>Editar ajudante</PageTitle>
+
+<h1>Editar ajudante</h1>
+
+@if (carregando)
+{
+    <p>Carregando ajudante...</p>
+}
+else if (mensagemErro is not null)
+{
+    <div class="alert alert-danger" role="alert">
+        @mensagemErro
+    </div>
+}
+else
+{
+    <EditForm Model="modelo" OnValidSubmit="SalvarAsync">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label for="nome" class="form-label">Nome</label>
+            <InputText id="nome" class="form-control" @bind-Value="modelo.Nome" />
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <InputText id="email" class="form-control" @bind-Value="modelo.Email" />
+        </div>
+
+        <div class="mb-3">
+            <label for="telefone" class="form-label">Telefone</label>
+            <InputText id="telefone" class="form-control" @bind-Value="modelo.Telefone" />
+        </div>
+
+        <div class="mb-3">
+            <label for="disponibilidade" class="form-label">Disponibilidade</label>
+            <InputText id="disponibilidade" class="form-control" @bind-Value="modelo.Disponibilidade" />
+        </div>
+
+        <div class="mb-3">
+            <label for="habilidades" class="form-label">Habilidades</label>
+            <InputTextArea id="habilidades" class="form-control" @bind-Value="modelo.Habilidades" />
+        </div>
+
+        <div class="mb-3">
+            <label for="gruposAtribuidos" class="form-label">Grupos atribuídos (separados por vírgula)</label>
+            <InputText id="gruposAtribuidos" class="form-control" @bind-Value="gruposAtribuidosTexto" />
+        </div>
+
+        <button type="submit" class="btn btn-primary" disabled="@salvando">Salvar</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private AjudanteModel modelo = new();
+    private string? gruposAtribuidosTexto;
+    private bool carregando = true;
+    private bool salvando;
+    private string? mensagemErro;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            modelo = await AjudantesClient.GetByIdAsync(Id);
+            gruposAtribuidosTexto = string.Join(", ", modelo.GruposAtribuidos);
+        }
+        catch (Exception)
+        {
+            mensagemErro = "Não foi possível carregar o ajudante.";
+        }
+        finally
+        {
+            carregando = false;
+        }
+    }
+
+    private async Task SalvarAsync()
+    {
+        salvando = true;
+        mensagemErro = null;
+        try
+        {
+            modelo.GruposAtribuidos = (gruposAtribuidosTexto ?? string.Empty)
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .ToList();
+
+            await AjudantesClient.UpdateAsync(Id, modelo);
+            NavigationManager.NavigateTo("/ajudantes");
+        }
+        catch (Exception)
+        {
+            mensagemErro = "Não foi possível salvar o ajudante.";
+        }
+        finally
+        {
+            salvando = false;
+        }
+    }
+
+    private void Cancelar()
+    {
+        NavigationManager.NavigateTo("/ajudantes");
+    }
+}

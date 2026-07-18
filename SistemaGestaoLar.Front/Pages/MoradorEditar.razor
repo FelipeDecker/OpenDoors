@@ -1,0 +1,104 @@
+@page "/moradores/editar/{Id:int}"
+@using System.ComponentModel.DataAnnotations
+@inject IMoradoresClient MoradoresClient
+@inject NavigationManager NavigationManager
+
+<PageTitle>Editar morador</PageTitle>
+
+<h1>Editar morador</h1>
+
+@if (carregando)
+{
+    <p>Carregando morador...</p>
+}
+else if (mensagemErro is not null)
+{
+    <div class="alert alert-danger" role="alert">
+        @mensagemErro
+    </div>
+}
+else
+{
+    <EditForm Model="modelo" OnValidSubmit="SalvarAsync">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label for="nomeCompleto" class="form-label">Nome completo</label>
+            <InputText id="nomeCompleto" class="form-control" @bind-Value="modelo.NomeCompleto" />
+        </div>
+
+        <div class="mb-3">
+            <label for="dataNascimento" class="form-label">Data de nascimento</label>
+            <InputDate id="dataNascimento" class="form-control" @bind-Value="modelo.DataNascimento" />
+        </div>
+
+        <div class="mb-3">
+            <label for="contatoEmergencia" class="form-label">Contato de emergência</label>
+            <InputText id="contatoEmergencia" class="form-control" @bind-Value="modelo.ContatoEmergencia" />
+        </div>
+
+        <div class="mb-3">
+            <label for="observacoes" class="form-label">Observações</label>
+            <InputTextArea id="observacoes" class="form-control" @bind-Value="modelo.Observacoes" />
+        </div>
+
+        <div class="mb-3">
+            <label for="historicoAcolhimento" class="form-label">Histórico de acolhimento</label>
+            <InputTextArea id="historicoAcolhimento" class="form-control" @bind-Value="modelo.HistoricoAcolhimento" />
+        </div>
+
+        <button type="submit" class="btn btn-primary" disabled="@salvando">Salvar</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private MoradorModel modelo = new();
+    private bool carregando = true;
+    private bool salvando;
+    private string? mensagemErro;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            modelo = await MoradoresClient.GetByIdAsync(Id);
+        }
+        catch (Exception)
+        {
+            mensagemErro = "Não foi possível carregar o morador.";
+        }
+        finally
+        {
+            carregando = false;
+        }
+    }
+
+    private async Task SalvarAsync()
+    {
+        salvando = true;
+        mensagemErro = null;
+        try
+        {
+            await MoradoresClient.UpdateAsync(Id, modelo);
+            NavigationManager.NavigateTo("/moradores");
+        }
+        catch (Exception)
+        {
+            mensagemErro = "Não foi possível salvar o morador.";
+        }
+        finally
+        {
+            salvando = false;
+        }
+    }
+
+    private void Cancelar()
+    {
+        NavigationManager.NavigateTo("/moradores");
+    }
+}

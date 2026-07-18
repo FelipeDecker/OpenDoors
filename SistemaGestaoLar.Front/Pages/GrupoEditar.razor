@@ -1,0 +1,89 @@
+@page "/grupos/editar/{Id:int}"
+@using System.ComponentModel.DataAnnotations
+@inject IGruposClient GruposClient
+@inject NavigationManager NavigationManager
+
+<PageTitle>Editar grupo</PageTitle>
+
+<h1>Editar grupo</h1>
+
+@if (carregando)
+{
+    <p>Carregando grupo...</p>
+}
+else if (mensagemErro is not null)
+{
+    <div class="alert alert-danger" role="alert">
+        @mensagemErro
+    </div>
+}
+else
+{
+    <EditForm Model="modelo" OnValidSubmit="SalvarAsync">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label for="nome" class="form-label">Nome</label>
+            <InputText id="nome" class="form-control" @bind-Value="modelo.Nome" />
+        </div>
+
+        <div class="mb-3">
+            <label for="descricao" class="form-label">Descrição</label>
+            <InputTextArea id="descricao" class="form-control" @bind-Value="modelo.Descricao" />
+        </div>
+
+        <button type="submit" class="btn btn-primary" disabled="@salvando">Salvar</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private GrupoModel modelo = new();
+    private bool carregando = true;
+    private bool salvando;
+    private string? mensagemErro;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            modelo = await GruposClient.GetByIdAsync(Id);
+        }
+        catch (Exception)
+        {
+            mensagemErro = "Não foi possível carregar o grupo.";
+        }
+        finally
+        {
+            carregando = false;
+        }
+    }
+
+    private async Task SalvarAsync()
+    {
+        salvando = true;
+        mensagemErro = null;
+        try
+        {
+            await GruposClient.UpdateAsync(Id, modelo);
+            NavigationManager.NavigateTo("/grupos");
+        }
+        catch (Exception)
+        {
+            mensagemErro = "Não foi possível salvar o grupo.";
+        }
+        finally
+        {
+            salvando = false;
+        }
+    }
+
+    private void Cancelar()
+    {
+        NavigationManager.NavigateTo("/grupos");
+    }
+}

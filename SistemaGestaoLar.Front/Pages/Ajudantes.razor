@@ -1,0 +1,112 @@
+@page "/ajudantes"
+@inject IAjudantesClient AjudantesClient
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Ajudantes</PageTitle>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Ajudantes</h1>
+    <button type="button" class="btn btn-primary" @onclick="NovoAjudante">Novo ajudante</button>
+</div>
+
+@if (carregando)
+{
+    <p>Carregando ajudantes...</p>
+}
+else if (mensagemErro is not null)
+{
+    <div class="alert alert-danger" role="alert">
+        @mensagemErro
+    </div>
+}
+else if (ajudantes.Count == 0)
+{
+    <p>Nenhum ajudante cadastrado.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Telefone</th>
+                    <th scope="col">Disponibilidade</th>
+                    <th scope="col">Habilidades</th>
+                    <th scope="col">Grupos atribuídos</th>
+                    <th scope="col">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ajudante in ajudantes)
+                {
+                    <tr>
+                        <td>@ajudante.Nome</td>
+                        <td>@ajudante.Email</td>
+                        <td>@ajudante.Telefone</td>
+                        <td>@ajudante.Disponibilidade</td>
+                        <td>@ajudante.Habilidades</td>
+                        <td>@string.Join(", ", ajudante.GruposAtribuidos)</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-primary me-1" @onclick="() => EditarAjudante(ajudante.Id)">Editar</button>
+                            <button type="button" class="btn btn-sm btn-outline-danger" @onclick="() => ExcluirAjudanteAsync(ajudante)">Excluir</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private ICollection<AjudanteModel> ajudantes = [];
+    private bool carregando = true;
+    private string? mensagemErro;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            ajudantes = await AjudantesClient.GetAsync();
+        }
+        catch (Exception)
+        {
+            mensagemErro = "Não foi possível carregar os ajudantes.";
+        }
+        finally
+        {
+            carregando = false;
+        }
+    }
+
+    private void NovoAjudante()
+    {
+        NavigationManager.NavigateTo("/ajudantes/novo");
+    }
+
+    private void EditarAjudante(int id)
+    {
+        NavigationManager.NavigateTo($"/ajudantes/editar/{id}");
+    }
+
+    private async Task ExcluirAjudanteAsync(AjudanteModel ajudante)
+    {
+        var confirmado = await JSRuntime.InvokeAsync<bool>("confirm", $"Deseja realmente excluir o ajudante \"{ajudante.Nome}\"?");
+        if (!confirmado)
+        {
+            return;
+        }
+
+        try
+        {
+            await AjudantesClient.DeleteAsync(ajudante.Id);
+            ajudantes.Remove(ajudante);
+        }
+        catch (Exception)
+        {
+            mensagemErro = "Não foi possível excluir o ajudante.";
+        }
+    }
+}

@@ -1,0 +1,63 @@
+@page "/grupos/novo"
+@using System.ComponentModel.DataAnnotations
+@inject IGruposClient GruposClient
+@inject NavigationManager NavigationManager
+
+<PageTitle>Novo grupo</PageTitle>
+
+<h1>Novo grupo</h1>
+
+@if (mensagemErro is not null)
+{
+    <div class="alert alert-danger" role="alert">
+        @mensagemErro
+    </div>
+}
+
+<EditForm Model="modelo" OnValidSubmit="AdicionarAsync">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="nome" class="form-label">Nome</label>
+        <InputText id="nome" class="form-control" @bind-Value="modelo.Nome" />
+    </div>
+
+    <div class="mb-3">
+        <label for="descricao" class="form-label">Descrição</label>
+        <InputTextArea id="descricao" class="form-control" @bind-Value="modelo.Descricao" />
+    </div>
+
+    <button type="submit" class="btn btn-primary" disabled="@salvando">Adicionar</button>
+    <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+</EditForm>
+
+@code {
+    private GrupoModel modelo = new();
+    private bool salvando;
+    private string? mensagemErro;
+
+    private async Task AdicionarAsync()
+    {
+        salvando = true;
+        mensagemErro = null;
+        try
+        {
+            await GruposClient.CreateAsync(modelo);
+            NavigationManager.NavigateTo("/grupos");
+        }
+        catch (Exception)
+        {
+            mensagemErro = "Não foi possível adicionar o grupo.";
+        }
+        finally
+        {
+            salvando = false;
+        }
+    }
+
+    private void Cancelar()
+    {
+        NavigationManager.NavigateTo("/grupos");
+    }
+}

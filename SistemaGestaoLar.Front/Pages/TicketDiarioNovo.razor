@@ -1,0 +1,168 @@
+@page "/tickets-diarios/novo"
+@using System.ComponentModel.DataAnnotations
+@inject ITicketDiariosClient TicketDiariosClient
+@inject IMoradoresClient MoradoresClient
+@inject NavigationManager NavigationManager
+
+<PageTitle>Novo ticket diário</PageTitle>
+
+<h1>Novo ticket diário</h1>
+
+@if (mensagemErro is not null)
+{
+    <div class="alert alert-danger" role="alert">
+        @mensagemErro
+    </div>
+}
+
+@if (carregandoMoradores)
+{
+    <p>Carregando moradores...</p>
+}
+else
+{
+    <EditForm Model="modelo" OnValidSubmit="AdicionarAsync">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label for="morador" class="form-label">Morador</label>
+            <InputSelect id="morador" class="form-select" @bind-Value="modelo.MoradorId">
+                <option value="0">Selecione um morador</option>
+                @foreach (var morador in moradores)
+                {
+                    <option value="@morador.Id">@morador.NomeCompleto</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="mb-3">
+            <label for="dataServico" class="form-label">Data do serviço</label>
+            <InputDate id="dataServico" class="form-control" @bind-Value="dataServico" />
+        </div>
+
+        <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <label class="form-label mb-0">Serviços</label>
+                <button type="button" class="btn btn-sm btn-outline-primary" @onclick="AdicionarServico">Adicionar serviço</button>
+            </div>
+
+            @if (modelo.Servicos.Count == 0)
+            {
+                <p class="text-muted mt-2">Nenhum serviço adicionado.</p>
+            }
+            else
+            {
+                <table class="table table-sm align-middle mt-2">
+                    <thead>
+                        <tr>
+                            <th>Serviço</th>
+                            <th>Status</th>
+                            <th>Justificativa</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var servico in modelo.Servicos)
+                        {
+                            <tr>
+                                <td>
+                                    <InputText class="form-control" @bind-Value="servico.NomeServico" placeholder="Nome do serviço" />
+                                </td>
+                                <td>
+                                    <InputSelect class="form-select" @bind-Value="servico.Status">
+                                        @foreach (var status in Enum.GetValues<ServicoStatusEnum>())
+                                        {
+                                            <option value="@status">@status</option>
+                                        }
+                                    </InputSelect>
+                                </td>
+                                <td>
+                                    <InputText class="form-control" @bind-Value="servico.Justificativa" placeholder="Justificativa (opcional)" />
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" @onclick="() => RemoverServico(servico)">Remover</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+
+        <button type="submit" class="btn btn-primary" disabled="@salvando">Adicionar</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+    </EditForm>
+}
+
+@code {
+    private TicketDiarioModel modelo = new();
+    private ICollection<MoradorModel> moradores = [];
+    private DateTime dataServico = DateTime.Today;
+    private bool carregandoMoradores = true;
+    private bool salvando;
+    private string? mensagemErro;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            moradores = await MoradoresClient.GetAsync();
+        }
+        catch (Exception)
+        {
+            mensagemErro = "Não foi possível carregar os moradores.";
+        }
+        finally
+        {
+            carregandoMoradores = false;
+        }
+    }
+
+    private void AdicionarServico()
+    {
+        modelo.Servicos.Add(new ServicoStatusModel { NomeServico = string.Empty, Status = ServicoStatusEnum.Pendente });
+    }
+
+    private void RemoverServico(ServicoStatusModel servico)
+    {
+        modelo.Servicos.Remove(servico);
+    }
+
+    private async Task AdicionarAsync()
+    {
+        if (modelo.MoradorId <= 0)
+        {
+            mensagemErro = "Selecione um morador.";
+            return;
+        }
+
+        if (modelo.Servicos.Count == 0)
+        {
+            mensagemErro = "Adicione ao menos um serviço.";
+            return;
+        }
+
+        salvando = true;
+        mensagemErro = null;
+        try
+        {
+            modelo.DataServico = new DateTimeOffset(dataServico);
+            await TicketDiariosClient.CreateAsync(modelo);
+            NavigationManager.NavigateTo("/tickets-diarios");
+        }
+        catch (Exception)
+        {
+            mensagemErro = "Não foi possível adicionar o ticket diário.";
+        }
+        finally
+        {
+            salvando = false;
+        }
+    }
+
+    private void Cancelar()
+    {
+        NavigationManager.NavigateTo("/tickets-diarios");
+    }
+}

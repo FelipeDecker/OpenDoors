@@ -1,0 +1,127 @@
+@page "/tickets-diarios"
+@using System.Linq
+@inject ITicketDiariosClient TicketDiariosClient
+@inject IMoradoresClient MoradoresClient
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Tickets Diários</PageTitle>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Tickets Diários</h1>
+    <button type="button" class="btn btn-primary" @onclick="NovoTicket">Novo ticket</button>
+</div>
+
+@if (carregando)
+{
+    <p>Carregando tickets diários...</p>
+}
+else if (mensagemErro is not null)
+{
+    <div class="alert alert-danger" role="alert">
+        @mensagemErro
+    </div>
+}
+else if (tickets.Count == 0)
+{
+    <p>Nenhum ticket diário cadastrado.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Morador</th>
+                    <th scope="col">Data do serviço</th>
+                    <th scope="col">Serviços</th>
+                    <th scope="col">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ticket in tickets)
+                {
+                    <tr>
+                        <td>@ObterNomeMorador(ticket.MoradorId)</td>
+                        <td>@ticket.DataServico.ToString("dd/MM/yyyy")</td>
+                        <td>@ObterResumoServicos(ticket)</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-primary me-1" @onclick="() => EditarTicket(ticket.Id)">Editar</button>
+                            <button type="button" class="btn btn-sm btn-outline-danger" @onclick="() => ExcluirTicketAsync(ticket)">Excluir</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private ICollection<TicketDiarioModel> tickets = [];
+    private Dictionary<int, string> nomesMoradores = new();
+    private bool carregando = true;
+    private string? mensagemErro;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            tickets = await TicketDiariosClient.GetAsync();
+
+            var moradores = await MoradoresClient.GetAsync();
+            nomesMoradores = moradores.ToDictionary(m => m.Id, m => m.NomeCompleto);
+        }
+        catch (Exception)
+        {
+            mensagemErro = "Não foi possível carregar os tickets diários.";
+        }
+        finally
+        {
+            carregando = false;
+        }
+    }
+
+    private string ObterNomeMorador(int moradorId)
+    {
+        return nomesMoradores.TryGetValue(moradorId, out var nome) ? nome : $"Morador #{moradorId}";
+    }
+
+    private string ObterResumoServicos(TicketDiarioModel ticket)
+    {
+        if (ticket.Servicos is null || ticket.Servicos.Count == 0)
+        {
+            return "Nenhum serviço";
+        }
+
+        return string.Join(", ", ticket.Servicos.Select(s => $"{s.NomeServico} ({s.Status})"));
+    }
+
+    private void NovoTicket()
+    {
+        NavigationManager.NavigateTo("/tickets-diarios/novo");
+    }
+
+    private void EditarTicket(int id)
+    {
+        NavigationManager.NavigateTo($"/tickets-diarios/editar/{id}");
+    }
+
+    private async Task ExcluirTicketAsync(TicketDiarioModel ticket)
+    {
+        var confirmado = await JSRuntime.InvokeAsync<bool>("confirm", $"Deseja realmente excluir o ticket diário de \"{ObterNomeMorador(ticket.MoradorId)}\" em {ticket.DataServico:dd/MM/yyyy}?");
+        if (!confirmado)
+        {
+            return;
+        }
+
+        try
+        {
+            await TicketDiariosClient.DeleteAsync(ticket.Id);
+            tickets.Remove(ticket);
+        }
+        catch (Exception)
+        {
+            mensagemErro = "Não foi possível excluir o ticket diário.";
+        }
+    }
+}
