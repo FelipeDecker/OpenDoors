@@ -1,0 +1,71 @@
+@page "/moradores"
+@inject IMoradoresClient MoradoresClient
+
+<PageTitle>Moradores</PageTitle>
+
+<h1>Moradores</h1>
+
+@if (carregando)
+{
+    <p>Carregando moradores...</p>
+}
+else if (mensagemErro is not null)
+{
+    <div class="alert alert-danger" role="alert">
+        @mensagemErro
+    </div>
+}
+else if (moradores.Count == 0)
+{
+    <p>Nenhum morador cadastrado.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Nome completo</th>
+                    <th scope="col">Data de nascimento</th>
+                    <th scope="col">Contato de emergência</th>
+                    <th scope="col">Observações</th>
+                    <th scope="col">Histórico de acolhimento</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var morador in moradores)
+                {
+                    <tr>
+                        <td>@morador.NomeCompleto</td>
+                        <td>@morador.DataNascimento.ToString("dd/MM/yyyy")</td>
+                        <td>@morador.ContatoEmergencia</td>
+                        <td>@morador.Observacoes</td>
+                        <td>@morador.HistoricoAcolhimento</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private ICollection<MoradorModel> moradores = [];
+    private bool carregando = true;
+    private string? mensagemErro;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            moradores = await MoradoresClient.GetAsync();
+        }
+        catch (Exception)
+        {
+            mensagemErro = "Não foi possível carregar os moradores.";
+        }
+        finally
+        {
+            carregando = false;
+        }
+    }
+}
