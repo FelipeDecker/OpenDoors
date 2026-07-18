@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SistemaGestaoLar.Api.Data;
 
@@ -10,9 +11,11 @@ using SistemaGestaoLar.Api.Data;
 namespace SistemaGestaoLar.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260718202829_ConfigureMoradorFields")]
+    partial class ConfigureMoradorFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.10");
@@ -80,7 +83,7 @@ namespace SistemaGestaoLar.Api.Migrations
                     b.Property<string>("ContatoEmergencia")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("DataNascimento")
+                    b.Property<DateTime>("DataNascimento")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("HistoricoAcolhimento")

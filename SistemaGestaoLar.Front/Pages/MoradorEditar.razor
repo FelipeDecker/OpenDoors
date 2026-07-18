@@ -1,5 +1,4 @@
 @page "/moradores/editar/{Id:int}"
-@using System.ComponentModel.DataAnnotations
 @inject IMoradoresClient MoradoresClient
 @inject NavigationManager NavigationManager
 
@@ -20,9 +19,6 @@ else if (mensagemErro is not null)
 else
 {
     <EditForm Model="modelo" OnValidSubmit="SalvarAsync">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-
         <div class="mb-3">
             <label for="nomeCompleto" class="form-label">Nome completo</label>
             <InputText id="nomeCompleto" class="form-control" @bind-Value="modelo.NomeCompleto" />

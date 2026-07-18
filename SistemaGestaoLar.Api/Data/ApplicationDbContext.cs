@@ -13,5 +13,28 @@ namespace SistemaGestaoLar.Api.Data
         public DbSet<Ajudante> Ajudantes { get; set; }
         public DbSet<Grupo> Grupos { get; set; }
         public DbSet<TicketDiario> TicketDiarios { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Morador>(entity =>
+            {
+                entity.Property(m => m.NomeCompleto)
+                    .IsRequired();
+
+                entity.Property(m => m.DataNascimento)
+                    .IsRequired(false);
+
+                entity.Property(m => m.ContatoEmergencia)
+                    .IsRequired(false);
+
+                entity.Property(m => m.Observacoes)
+                    .IsRequired(false);
+
+                entity.Property(m => m.HistoricoAcolhimento)
+                    .IsRequired(false);
+            });
+        }
     }
 }

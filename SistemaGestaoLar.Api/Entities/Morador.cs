@@ -10,15 +10,12 @@ namespace SistemaGestaoLar.Api.Entities
         [Required]
         public string NomeCompleto { get; set; }
 
-        public DateTime DataNascimento { get; set; }
+        public DateTime? DataNascimento { get; set; }
 
-        [Required]
         public string ContatoEmergencia { get; set; }
 
-        [Required]
         public string Observacoes { get; set; }
 
-        [Required]
         public string HistoricoAcolhimento { get; set; }
     }
 }
