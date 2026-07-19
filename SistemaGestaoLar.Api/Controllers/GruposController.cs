@@ -77,5 +77,53 @@ namespace SistemaGestaoLar.Api.Controllers
             if (!ok) return BadRequest(new ErrorResponseModel { Errors = "Grupo não encontrado" });
             return Ok();
         }
+
+        [HttpGet("{id:int}/ajudantes")]
+        [ProducesResponseType(typeof(IEnumerable<AjudanteModel>), 200)]
+        [ProducesResponseType(typeof(ErrorResponseModel), 400)]
+        public async Task<IActionResult> GetAjudantes(int id)
+        {
+            var grupo = await _service.GetByIdAsync(id);
+            if (grupo == null) return BadRequest(new ErrorResponseModel { Errors = "Grupo não encontrado" });
+
+            var ajudantes = await _service.GetAjudantesDoGrupoAsync(id);
+            var models = new List<AjudanteModel>();
+            foreach (var a in ajudantes) models.Add(new AjudanteModel(a));
+            return Ok(models);
+        }
+
+        [HttpGet("{id:int}/ajudantes-disponiveis")]
+        [ProducesResponseType(typeof(IEnumerable<AjudanteModel>), 200)]
+        [ProducesResponseType(typeof(ErrorResponseModel), 400)]
+        public async Task<IActionResult> GetAjudantesDisponiveis(int id)
+        {
+            var grupo = await _service.GetByIdAsync(id);
+            if (grupo == null) return BadRequest(new ErrorResponseModel { Errors = "Grupo não encontrado" });
+
+            var ajudantes = await _service.GetAjudantesDisponiveisAsync(id);
+            var models = new List<AjudanteModel>();
+            foreach (var a in ajudantes) models.Add(new AjudanteModel(a));
+            return Ok(models);
+        }
+
+        [HttpPost("{id:int}/ajudantes/{ajudanteId:int}")]
+        [ProducesResponseType(typeof(void), 200)]
+        [ProducesResponseType(typeof(ErrorResponseModel), 400)]
+        public async Task<IActionResult> AdicionarAjudante(int id, int ajudanteId)
+        {
+            var ok = await _service.AdicionarAjudanteAsync(id, ajudanteId);
+            if (!ok) return BadRequest(new ErrorResponseModel { Errors = "Grupo ou ajudante não encontrado" });
+            return Ok();
+        }
+
+        [HttpDelete("{id:int}/ajudantes/{ajudanteId:int}")]
+        [ProducesResponseType(typeof(void), 200)]
+        [ProducesResponseType(typeof(ErrorResponseModel), 400)]
+        public async Task<IActionResult> RemoverAjudante(int id, int ajudanteId)
+        {
+            var ok = await _service.RemoverAjudanteAsync(id, ajudanteId);
+            if (!ok) return BadRequest(new ErrorResponseModel { Errors = "Grupo ou ajudante não vinculado" });
+            return Ok();
+        }
     }
 }

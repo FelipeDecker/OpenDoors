@@ -102,6 +102,34 @@ namespace SistemaGestaoLar.Api.Client.Contracts
         /// <exception cref="GestaoLarException">A server side error occurred.</exception>
         System.Threading.Tasks.Task DeleteAsync(int id, System.Threading.CancellationToken cancellationToken);
 
+        /// <exception cref="GestaoLarException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<AjudanteModel>> GetAjudantesAsync(int id);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="GestaoLarException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<AjudanteModel>> GetAjudantesAsync(int id, System.Threading.CancellationToken cancellationToken);
+
+        /// <exception cref="GestaoLarException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<AjudanteModel>> GetAjudantesDisponiveisAsync(int id);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="GestaoLarException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<AjudanteModel>> GetAjudantesDisponiveisAsync(int id, System.Threading.CancellationToken cancellationToken);
+
+        /// <exception cref="GestaoLarException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task AdicionarAjudanteAsync(int id, int ajudanteId);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="GestaoLarException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task AdicionarAjudanteAsync(int id, int ajudanteId, System.Threading.CancellationToken cancellationToken);
+
+        /// <exception cref="GestaoLarException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task RemoverAjudanteAsync(int id, int ajudanteId);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="GestaoLarException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task RemoverAjudanteAsync(int id, int ajudanteId, System.Threading.CancellationToken cancellationToken);
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -196,7 +224,6 @@ namespace SistemaGestaoLar.Api.Client.Contracts
         public string Nome { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("email")]
-        [System.ComponentModel.DataAnnotations.Required]
         public string Email { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("telefone")]
@@ -204,16 +231,7 @@ namespace SistemaGestaoLar.Api.Client.Contracts
         public string Telefone { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("disponibilidade")]
-        [System.ComponentModel.DataAnnotations.Required]
         public string Disponibilidade { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("habilidades")]
-        [System.ComponentModel.DataAnnotations.Required]
-        public string Habilidades { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("gruposAtribuidos")]
-        [System.ComponentModel.DataAnnotations.Required]
-        public System.Collections.Generic.ICollection<string> GruposAtribuidos { get; set; } = new System.Collections.ObjectModel.Collection<string>();
 
     }
 
@@ -255,18 +273,15 @@ namespace SistemaGestaoLar.Api.Client.Contracts
         public string NomeCompleto { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("dataNascimento")]
-        public System.DateTimeOffset DataNascimento { get; set; }
+        public System.DateTimeOffset? DataNascimento { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("contatoEmergencia")]
-        [System.ComponentModel.DataAnnotations.Required]
         public string ContatoEmergencia { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("observacoes")]
-        [System.ComponentModel.DataAnnotations.Required]
         public string Observacoes { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("historicoAcolhimento")]
-        [System.ComponentModel.DataAnnotations.Required]
         public string HistoricoAcolhimento { get; set; }
 
     }

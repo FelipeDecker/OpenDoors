@@ -11,19 +11,13 @@ namespace SistemaGestaoLar.Api.Entities
         [Required]
         public string Nome { get; set; }
 
-        [Required]
         public string Email { get; set; }
 
         [Required]
         public string Telefone { get; set; }
 
-        [Required]
         public string Disponibilidade { get; set; }
 
-        [Required]
-        public string Habilidades { get; set; }
-
-        [Required]
-        public List<string> GruposAtribuidos { get; set; }
+        public List<Grupo> Grupos { get; set; } = new();
     }
 }

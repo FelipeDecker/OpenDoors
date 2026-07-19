@@ -38,23 +38,12 @@
         <InputText id="disponibilidade" class="form-control" @bind-Value="modelo.Disponibilidade" />
     </div>
 
-    <div class="mb-3">
-        <label for="habilidades" class="form-label">Habilidades</label>
-        <InputTextArea id="habilidades" class="form-control" @bind-Value="modelo.Habilidades" />
-    </div>
-
-    <div class="mb-3">
-        <label for="gruposAtribuidos" class="form-label">Grupos atribuídos (separados por vírgula)</label>
-        <InputText id="gruposAtribuidos" class="form-control" @bind-Value="gruposAtribuidosTexto" />
-    </div>
-
     <button type="submit" class="btn btn-primary" disabled="@salvando">Adicionar</button>
     <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
 </EditForm>
 
 @code {
     private AjudanteModel modelo = new();
-    private string? gruposAtribuidosTexto;
     private bool salvando;
     private string? mensagemErro;
 
@@ -64,10 +53,6 @@
         mensagemErro = null;
         try
         {
-            modelo.GruposAtribuidos = (gruposAtribuidosTexto ?? string.Empty)
-                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                .ToList();
-
             await AjudantesClient.CreateAsync(modelo);
             NavigationManager.NavigateTo("/ajudantes");
         }

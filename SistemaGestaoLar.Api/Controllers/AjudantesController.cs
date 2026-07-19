@@ -50,9 +50,7 @@ namespace SistemaGestaoLar.Api.Controllers
                 Nome = model.Nome,
                 Email = model.Email,
                 Telefone = model.Telefone,
-                Disponibilidade = model.Disponibilidade,
-                Habilidades = model.Habilidades,
-                GruposAtribuidos = model.GruposAtribuidos
+                Disponibilidade = model.Disponibilidade
             };
             var created = await _service.CreateAsync(entidade);
             return Ok(new AjudanteModel(created));
@@ -70,8 +68,6 @@ namespace SistemaGestaoLar.Api.Controllers
             entidade.Email = model.Email;
             entidade.Telefone = model.Telefone;
             entidade.Disponibilidade = model.Disponibilidade;
-            entidade.Habilidades = model.Habilidades;
-            entidade.GruposAtribuidos = model.GruposAtribuidos;
             var updated = await _service.UpdateAsync(entidade);
             return Ok(new AjudanteModel(updated));
         }

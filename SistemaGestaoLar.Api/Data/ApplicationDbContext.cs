@@ -35,6 +35,11 @@ namespace SistemaGestaoLar.Api.Data
                 entity.Property(m => m.HistoricoAcolhimento)
                     .IsRequired(false);
             });
+
+            modelBuilder.Entity<Ajudante>()
+                .HasMany(a => a.Grupos)
+                .WithMany(g => g.Ajudantes)
+                .UsingEntity(j => j.ToTable("AjudanteGrupo"));
         }
     }
 }

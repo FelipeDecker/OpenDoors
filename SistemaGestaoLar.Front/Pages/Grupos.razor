@@ -42,6 +42,7 @@ else
                         <td>@grupo.Nome</td>
                         <td>@grupo.Descricao</td>
                         <td>
+                            <button type="button" class="btn btn-sm btn-outline-secondary me-1" @onclick="() => AjudantesDoGrupo(grupo.Id)">Ajudantes</button>
                             <button type="button" class="btn btn-sm btn-outline-primary me-1" @onclick="() => EditarGrupo(grupo.Id)">Editar</button>
                             <button type="button" class="btn btn-sm btn-outline-danger" @onclick="() => ExcluirGrupoAsync(grupo)">Excluir</button>
                         </td>
@@ -81,6 +82,11 @@ else
     private void EditarGrupo(int id)
     {
         NavigationManager.NavigateTo($"/grupos/editar/{id}");
+    }
+
+    private void AjudantesDoGrupo(int id)
+    {
+        NavigationManager.NavigateTo($"/grupos/{id}/ajudantes");
     }
 
     private async Task ExcluirGrupoAsync(GrupoModel grupo)

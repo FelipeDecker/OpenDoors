@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace SistemaGestaoLar.Api.Entities
@@ -11,5 +12,7 @@ namespace SistemaGestaoLar.Api.Entities
 
         [Required]
         public string Descricao { get; set; }
+
+        public List<Ajudante> Ajudantes { get; set; } = new();
     }
 }

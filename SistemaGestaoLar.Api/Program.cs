@@ -31,11 +31,11 @@ builder.Services.AddOpenApiDocument(document =>
 var app = builder.Build();
 
 // Apply pending EF Core migrations automatically at startup
-//using (var scope = app.Services.CreateScope())
-//{
-//    var db = scope.ServiceProvider.GetRequiredService<SistemaGestaoLar.Api.Data.ApplicationDbContext>();
-//    db.Database.Migrate();
-//}
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<SistemaGestaoLar.Api.Data.ApplicationDbContext>();
+    db.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -1,0 +1,163 @@
+@page "/grupos/{Id:int}/ajudantes"
+@inject IGruposClient GruposClient
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Ajudantes do grupo</PageTitle>
+
+@if (carregando)
+{
+    <p>Carregando...</p>
+}
+else if (mensagemErro is not null)
+{
+    <div class="alert alert-danger" role="alert">
+        @mensagemErro
+    </div>
+}
+else
+{
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Ajudantes do grupo @grupo?.Nome</h1>
+        <button type="button" class="btn btn-secondary" @onclick="Voltar">Voltar</button>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <label for="ajudanteDisponivel" class="form-label">Adicionar ajudante</label>
+            <div class="input-group">
+                <select id="ajudanteDisponivel" class="form-select" @bind="ajudanteSelecionadoId">
+                    <option value="0">Selecione um ajudante...</option>
+                    @foreach (var ajudante in ajudantesDisponiveis)
+                    {
+                        <option value="@ajudante.Id">@ajudante.Nome</option>
+                    }
+                </select>
+                <button type="button" class="btn btn-primary" disabled="@(ajudanteSelecionadoId == 0 || adicionando)" @onclick="AdicionarAjudanteAsync">Adicionar</button>
+            </div>
+        </div>
+    </div>
+
+    @if (ajudantesDoGrupo.Count == 0)
+    {
+        <p>Nenhum ajudante vinculado a este grupo.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Telefone</th>
+                        <th scope="col">Disponibilidade</th>
+                        <th scope="col">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ajudante in ajudantesDoGrupo)
+                    {
+                        <tr>
+                            <td>@ajudante.Nome</td>
+                            <td>@ajudante.Email</td>
+                            <td>@ajudante.Telefone</td>
+                            <td>@ajudante.Disponibilidade</td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-outline-danger" @onclick="() => RemoverAjudanteAsync(ajudante)">Remover</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private GrupoModel? grupo;
+    private List<AjudanteModel> ajudantesDoGrupo = [];
+    private List<AjudanteModel> ajudantesDisponiveis = [];
+    private int ajudanteSelecionadoId;
+    private bool carregando = true;
+    private bool adicionando;
+    private string? mensagemErro;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregarDadosAsync();
+    }
+
+    private async Task CarregarDadosAsync()
+    {
+        carregando = true;
+        mensagemErro = null;
+        try
+        {
+            grupo = await GruposClient.GetByIdAsync(Id);
+            var doGrupo = await GruposClient.GetAjudantesAsync(Id);
+            var disponiveis = await GruposClient.GetAjudantesDisponiveisAsync(Id);
+            ajudantesDoGrupo = doGrupo.ToList();
+            ajudantesDisponiveis = disponiveis.ToList();
+        }
+        catch (Exception)
+        {
+            mensagemErro = "Não foi possível carregar os dados do grupo.";
+        }
+        finally
+        {
+            carregando = false;
+        }
+    }
+
+    private async Task AdicionarAjudanteAsync()
+    {
+        if (ajudanteSelecionadoId == 0)
+        {
+            return;
+        }
+
+        adicionando = true;
+        try
+        {
+            await GruposClient.AdicionarAjudanteAsync(Id, ajudanteSelecionadoId);
+            ajudanteSelecionadoId = 0;
+            await CarregarDadosAsync();
+        }
+        catch (Exception)
+        {
+            mensagemErro = "Não foi possível adicionar o ajudante ao grupo.";
+        }
+        finally
+        {
+            adicionando = false;
+        }
+    }
+
+    private async Task RemoverAjudanteAsync(AjudanteModel ajudante)
+    {
+        var confirmado = await JSRuntime.InvokeAsync<bool>("confirm", $"Deseja realmente remover \"{ajudante.Nome}\" deste grupo?");
+        if (!confirmado)
+        {
+            return;
+        }
+
+        try
+        {
+            await GruposClient.RemoverAjudanteAsync(Id, ajudante.Id);
+            await CarregarDadosAsync();
+        }
+        catch (Exception)
+        {
+            mensagemErro = "Não foi possível remover o ajudante do grupo.";
+        }
+    }
+
+    private void Voltar()
+    {
+        NavigationManager.NavigateTo("/grupos");
+    }
+}

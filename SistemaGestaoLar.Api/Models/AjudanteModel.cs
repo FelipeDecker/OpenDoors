@@ -15,8 +15,6 @@ namespace SistemaGestaoLar.Api.Models
             Email = entidade.Email;
             Telefone = entidade.Telefone;
             Disponibilidade = entidade.Disponibilidade;
-            Habilidades = entidade.Habilidades;
-            GruposAtribuidos = entidade.GruposAtribuidos;
         }
 
         public int Id { get; set; }
@@ -24,19 +22,11 @@ namespace SistemaGestaoLar.Api.Models
         [Required]
         public string Nome { get; set; }
 
-        [Required]
         public string Email { get; set; }
 
         [Required]
         public string Telefone { get; set; }
 
-        [Required]
         public string Disponibilidade { get; set; }
-
-        [Required]
-        public string Habilidades { get; set; }
-
-        [Required]
-        public List<string> GruposAtribuidos { get; set; }
     }
 }
