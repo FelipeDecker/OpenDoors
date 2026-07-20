@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace SistemaGestaoLar.Api.Entities
@@ -13,6 +11,6 @@ namespace SistemaGestaoLar.Api.Entities
         public DateOnly DataServico { get; set; }
 
         [Required]
-        public List<ServicoStatus> Servicos { get; set; }
+        public List<TicketServico> Servicos { get; set; }
     }
 }

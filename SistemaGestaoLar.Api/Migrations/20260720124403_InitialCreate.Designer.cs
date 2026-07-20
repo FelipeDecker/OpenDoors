@@ -11,8 +11,8 @@ using SistemaGestaoLar.Api.Data;
 namespace SistemaGestaoLar.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260719085503_AjudanteGrupoManyToMany")]
-    partial class AjudanteGrupoManyToMany
+    [Migration("20260720124403_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -112,24 +112,30 @@ namespace SistemaGestaoLar.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Justificativa")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NomeServico")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("TicketDiarioId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("TicketDiarioId");
+                    b.ToTable("ServicosStatus");
 
-                    b.ToTable("ServicoStatus");
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Banho"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Troca de Roupa"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Jantar"
+                        });
                 });
 
             modelBuilder.Entity("SistemaGestaoLar.Api.Entities.TicketDiario", b =>
@@ -149,6 +155,33 @@ namespace SistemaGestaoLar.Api.Migrations
                     b.ToTable("TicketDiarios");
                 });
 
+            modelBuilder.Entity("SistemaGestaoLar.Api.Entities.TicketServico", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Justificativa")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ServicoStatusId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TicketDiarioId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ServicoStatusId");
+
+                    b.HasIndex("TicketDiarioId");
+
+                    b.ToTable("TicketServicos");
+                });
+
             modelBuilder.Entity("AjudanteGrupo", b =>
                 {
                     b.HasOne("SistemaGestaoLar.Api.Entities.Ajudante", null)
@@ -164,11 +197,23 @@ namespace SistemaGestaoLar.Api.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SistemaGestaoLar.Api.Entities.ServicoStatus", b =>
+            modelBuilder.Entity("SistemaGestaoLar.Api.Entities.TicketServico", b =>
                 {
-                    b.HasOne("SistemaGestaoLar.Api.Entities.TicketDiario", null)
+                    b.HasOne("SistemaGestaoLar.Api.Entities.ServicoStatus", "ServicoStatus")
+                        .WithMany()
+                        .HasForeignKey("ServicoStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SistemaGestaoLar.Api.Entities.TicketDiario", "TicketDiario")
                         .WithMany("Servicos")
-                        .HasForeignKey("TicketDiarioId");
+                        .HasForeignKey("TicketDiarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ServicoStatus");
+
+                    b.Navigation("TicketDiario");
                 });
 
             modelBuilder.Entity("SistemaGestaoLar.Api.Entities.TicketDiario", b =>

@@ -17,10 +17,10 @@ namespace SistemaGestaoLar.Api.Models
             DataServico = entidade.DataServico;
             if (entidade.Servicos != null)
             {
-                Servicos = new List<ServicoStatusModel>();
+                Servicos = new List<TicketServicoModel>();
                 foreach (var s in entidade.Servicos)
                 {
-                    Servicos.Add(new ServicoStatusModel(s));
+                    Servicos.Add(new TicketServicoModel(s));
                 }
             }
         }
@@ -32,6 +32,6 @@ namespace SistemaGestaoLar.Api.Models
         public DateOnly DataServico { get; set; }
 
         [Required]
-        public List<ServicoStatusModel> Servicos { get; set; }
+        public List<TicketServicoModel> Servicos { get; set; }
     }
 }

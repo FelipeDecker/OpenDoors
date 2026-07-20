@@ -13,6 +13,8 @@ namespace SistemaGestaoLar.Api.Data
         public DbSet<Ajudante> Ajudantes { get; set; }
         public DbSet<Grupo> Grupos { get; set; }
         public DbSet<TicketDiario> TicketDiarios { get; set; }
+        public DbSet<ServicoStatus> ServicosStatus { get; set; }
+        public DbSet<TicketServico> TicketServicos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -40,6 +42,22 @@ namespace SistemaGestaoLar.Api.Data
                 .HasMany(a => a.Grupos)
                 .WithMany(g => g.Ajudantes)
                 .UsingEntity(j => j.ToTable("AjudanteGrupo"));
+
+            modelBuilder.Entity<TicketServico>()
+                .HasOne(ts => ts.TicketDiario)
+                .WithMany(t => t.Servicos)
+                .HasForeignKey(ts => ts.TicketDiarioId);
+
+            modelBuilder.Entity<TicketServico>()
+                .HasOne(ts => ts.ServicoStatus)
+                .WithMany()
+                .HasForeignKey(ts => ts.ServicoStatusId);
+
+            modelBuilder.Entity<ServicoStatus>().HasData(
+                new ServicoStatus { Id = 1, Name = "Banho" },
+                new ServicoStatus { Id = 2, Name = "Troca de Roupa" },
+                new ServicoStatus { Id = 3, Name = "Jantar" }
+            );
         }
     }
 }

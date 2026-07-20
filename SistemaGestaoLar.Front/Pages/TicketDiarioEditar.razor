@@ -124,10 +124,10 @@ else
 
     private void AdicionarServico()
     {
-        modelo.Servicos.Add(new ServicoStatusModel { NomeServico = string.Empty, Status = ServicoStatusEnum.Pendente });
+        modelo.Servicos.Add(new TicketServicoModel { NomeServico = string.Empty, Status = ServicoStatusEnum.Pendente });
     }
 
-    private void RemoverServico(ServicoStatusModel servico)
+    private void RemoverServico(TicketServicoModel servico)
     {
         modelo.Servicos.Remove(servico);
     }

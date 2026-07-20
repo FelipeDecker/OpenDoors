@@ -47,13 +47,13 @@ namespace SistemaGestaoLar.Api.Controllers
             {
                 MoradorId = model.MoradorId,
                 DataServico = model.DataServico,
-                Servicos = new System.Collections.Generic.List<ServicoStatus>()
+                Servicos = new System.Collections.Generic.List<TicketServico>()
             };
             if (model.Servicos != null)
             {
                 foreach (var s in model.Servicos)
                 {
-                    entidade.Servicos.Add(new ServicoStatus { NomeServico = s.NomeServico, Status = s.Status, Justificativa = s.Justificativa });
+                    entidade.Servicos.Add(new TicketServico { ServicoStatusId = s.ServicoStatusId, Status = s.Status, Justificativa = s.Justificativa });
                 }
             }
             var created = await _service.CreateAsync(entidade);
@@ -70,12 +70,12 @@ namespace SistemaGestaoLar.Api.Controllers
             if (entidade == null) return BadRequest(new ErrorResponseModel { Errors = "Ticket não encontrado" });
             entidade.MoradorId = model.MoradorId;
             entidade.DataServico = model.DataServico;
-            entidade.Servicos = new System.Collections.Generic.List<ServicoStatus>();
+            entidade.Servicos = new System.Collections.Generic.List<TicketServico>();
             if (model.Servicos != null)
             {
                 foreach (var s in model.Servicos)
                 {
-                    entidade.Servicos.Add(new ServicoStatus { NomeServico = s.NomeServico, Status = s.Status, Justificativa = s.Justificativa });
+                    entidade.Servicos.Add(new TicketServico { ServicoStatusId = s.ServicoStatusId, Status = s.Status, Justificativa = s.Justificativa });
                 }
             }
             var updated = await _service.UpdateAsync(entidade);

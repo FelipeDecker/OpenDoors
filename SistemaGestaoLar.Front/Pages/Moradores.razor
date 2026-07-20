@@ -43,7 +43,7 @@ else
                 {
                     <tr>
                         <td>@morador.NomeCompleto</td>
-                        <td>@morador.DataNascimento.Value.ToString("dd/MM/yyyy")</td>
+                        <td>@(morador.DataNascimento?.ToString("dd/MM/yyyy") ?? "")</td>
                         <td>@morador.ContatoEmergencia</td>
                         <td>@morador.Observacoes</td>
                         <td>@morador.HistoricoAcolhimento</td>
@@ -69,8 +69,17 @@ else
         {
             moradores = await MoradoresClient.GetAsync();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            if (ex is GestaoLarException<ErrorResponseModel> error)
+            {
+                mensagemErro = error.Response ?? "Não foi possível carregar os moradores.";
+            }
+            else
+            {
+                mensagemErro = "Não foi possível carregar os moradores.";
+            }
+            // throw ex;
             mensagemErro = "Não foi possível carregar os moradores.";
         }
         finally

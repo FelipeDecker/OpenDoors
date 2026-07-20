@@ -15,6 +15,7 @@ builder.Services.AddScoped<SistemaGestaoLar.Api.Services.MoradorService>();
 builder.Services.AddScoped<SistemaGestaoLar.Api.Services.AjudanteService>();
 builder.Services.AddScoped<SistemaGestaoLar.Api.Services.GrupoService>();
 builder.Services.AddScoped<SistemaGestaoLar.Api.Services.TicketDiarioService>();
+builder.Services.AddScoped<SistemaGestaoLar.Api.Services.ServicoStatusService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Front", policy =>
@@ -30,9 +31,13 @@ builder.Services.AddOpenApiDocument(document =>
 
 var app = builder.Build();
 
-// Apply pending EF Core migrations automatically at startup
-using (var scope = app.Services.CreateScope())
+// Apply pending EF Core migrations automatically at startup.
+// Skip when the host is spun up in-process by NSwag (during "dotnet build" in Release)
+// to generate the OpenAPI document, otherwise the migration lock can be acquired
+// concurrently by multiple processes and the build hangs waiting for it to release.
+if (!app.Environment.IsEnvironment("NSwagGenerator"))
 {
+    using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<SistemaGestaoLar.Api.Data.ApplicationDbContext>();
     db.Database.Migrate();
 }

@@ -173,6 +173,18 @@ namespace SistemaGestaoLar.Api.Client.Contracts
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial interface IServicosStatusClient
+    {
+        /// <exception cref="GestaoLarException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ServicoStatusModel>> GetAsync();
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="GestaoLarException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ServicoStatusModel>> GetAsync(System.Threading.CancellationToken cancellationToken);
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial interface ITicketDiariosClient
     {
         /// <exception cref="GestaoLarException">A server side error occurred.</exception>
@@ -287,6 +299,19 @@ namespace SistemaGestaoLar.Api.Client.Contracts
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ServicoStatusModel
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("id")]
+        public int Id { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("name")]
+        [System.ComponentModel.DataAnnotations.Required]
+        public string Name { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class TicketDiarioModel
     {
 
@@ -302,19 +327,21 @@ namespace SistemaGestaoLar.Api.Client.Contracts
 
         [System.Text.Json.Serialization.JsonPropertyName("servicos")]
         [System.ComponentModel.DataAnnotations.Required]
-        public System.Collections.Generic.ICollection<ServicoStatusModel> Servicos { get; set; } = new System.Collections.ObjectModel.Collection<ServicoStatusModel>();
+        public System.Collections.Generic.ICollection<TicketServicoModel> Servicos { get; set; } = new System.Collections.ObjectModel.Collection<TicketServicoModel>();
 
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ServicoStatusModel
+    public partial class TicketServicoModel
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("id")]
         public int Id { get; set; }
 
+        [System.Text.Json.Serialization.JsonPropertyName("servicoStatusId")]
+        public int ServicoStatusId { get; set; }
+
         [System.Text.Json.Serialization.JsonPropertyName("nomeServico")]
-        [System.ComponentModel.DataAnnotations.Required]
         public string NomeServico { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("status")]
