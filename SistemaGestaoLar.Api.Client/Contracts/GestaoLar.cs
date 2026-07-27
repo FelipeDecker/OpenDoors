@@ -341,9 +341,6 @@ namespace SistemaGestaoLar.Api.Client.Contracts
         [System.Text.Json.Serialization.JsonPropertyName("servicoTicket")]
         public ServicoTicketEnum ServicoTicket { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("nomeServico")]
-        public string NomeServico { get; set; }
-
         [System.Text.Json.Serialization.JsonPropertyName("status")]
         public ServicoStatusEnum Status { get; set; }
 

@@ -34,7 +34,8 @@ namespace SistemaGestaoLar.Api.Controllers
         {
             var item = await _service.GetByIdAsync(id);
             if (item == null) return BadRequest(new ErrorResponseModel { Errors = "Ticket não encontrado" });
-            return Ok(new TicketDiarioModel(item));
+            var model = new TicketDiarioModel(item);
+            return Ok(model);
         }
 
         [HttpPost]

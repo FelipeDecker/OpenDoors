@@ -12,7 +12,6 @@ namespace SistemaGestaoLar.Api.Models
         public TicketServicoModel(TicketServico entidade)
         {
             Id = entidade.Id;
-            NomeServico = entidade.ServicoTicket?.Name;
             ServicoTicket = Enum.TryParse<ServicoTicketEnum>(entidade.ServicoTicket?.Name, out var servico)
                 ? servico
                 : default;
@@ -25,7 +24,6 @@ namespace SistemaGestaoLar.Api.Models
 
         [Required]
         public ServicoTicketEnum ServicoTicket { get; set; }
-        public string NomeServico { get; set; }
 
         [Required]
         public ServicoStatusEnum Status { get; set; }

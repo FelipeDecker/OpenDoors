@@ -95,7 +95,7 @@ else
             return "Nenhum serviço";
         }
 
-        return string.Join(", ", ticket.Servicos.Select(s => $"{s.NomeServico} ({s.Status})"));
+        return string.Join(", ", ticket.Servicos.Select(s => $"{s.ServicoTicket} ({s.Status})"));
     }
 
     private void NovoTicket()
