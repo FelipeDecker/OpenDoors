@@ -268,7 +268,6 @@ namespace SistemaGestaoLar.Api.Client.Contracts
         public string Nome { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("descricao")]
-        [System.ComponentModel.DataAnnotations.Required]
         public string Descricao { get; set; }
 
     }
@@ -322,6 +321,7 @@ namespace SistemaGestaoLar.Api.Client.Contracts
         public int MoradorId { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("dataServico")]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         [System.Text.Json.Serialization.JsonConverter(typeof(DateFormatConverter))]
         public System.DateTimeOffset DataServico { get; set; }
 
@@ -338,8 +338,8 @@ namespace SistemaGestaoLar.Api.Client.Contracts
         [System.Text.Json.Serialization.JsonPropertyName("id")]
         public int Id { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("servicoStatusId")]
-        public int ServicoStatusId { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("servicoTicket")]
+        public ServicoTicketEnum ServicoTicket { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("nomeServico")]
         public string NomeServico { get; set; }
@@ -347,8 +347,17 @@ namespace SistemaGestaoLar.Api.Client.Contracts
         [System.Text.Json.Serialization.JsonPropertyName("status")]
         public ServicoStatusEnum Status { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("justificativa")]
-        public string Justificativa { get; set; }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ServicoTicketEnum
+    {
+
+        Jantar = 1,
+
+        Banho = 2,
+
+        TrocaRoupas = 3,
 
     }
 
@@ -356,11 +365,11 @@ namespace SistemaGestaoLar.Api.Client.Contracts
     public enum ServicoStatusEnum
     {
 
-        Pendente = 0,
+        Pendente = 1,
 
-        Realizado = 1,
+        Realizado = 2,
 
-        NaoRealizado = 2,
+        NaoRealizado = 3,
 
     }
 

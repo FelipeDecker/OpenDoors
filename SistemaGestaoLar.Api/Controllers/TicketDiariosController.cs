@@ -53,7 +53,7 @@ namespace SistemaGestaoLar.Api.Controllers
             {
                 foreach (var s in model.Servicos)
                 {
-                    entidade.Servicos.Add(new TicketServico { ServicoStatusId = s.ServicoStatusId, Status = s.Status, Justificativa = s.Justificativa });
+                    entidade.Servicos.Add(new TicketServico { ServicoTicketId = (int)s.ServicoTicket + 1, ServicoStatusId = (int)s.Status + 1 });
                 }
             }
             var created = await _service.CreateAsync(entidade);
@@ -75,7 +75,7 @@ namespace SistemaGestaoLar.Api.Controllers
             {
                 foreach (var s in model.Servicos)
                 {
-                    entidade.Servicos.Add(new TicketServico { ServicoStatusId = s.ServicoStatusId, Status = s.Status, Justificativa = s.Justificativa });
+                    entidade.Servicos.Add(new TicketServico { ServicoTicketId = (int)s.ServicoTicket + 1, ServicoStatusId = (int)s.Status + 1 });
                 }
             }
             var updated = await _service.UpdateAsync(entidade);

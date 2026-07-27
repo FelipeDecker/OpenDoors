@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SistemaGestaoLar.Api.Data;
 
@@ -10,9 +11,11 @@ using SistemaGestaoLar.Api.Data;
 namespace SistemaGestaoLar.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260720131538_RemoveDescricaoRequiredFromGrupo")]
+    partial class RemoveDescricaoRequiredFromGrupo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.10");
@@ -119,50 +122,18 @@ namespace SistemaGestaoLar.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 2,
-                            Name = "Pendente"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Realizado"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "NaoRealizado"
-                        });
-                });
-
-            modelBuilder.Entity("SistemaGestaoLar.Api.Entities.ServicoTicket", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ServicosTicket");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 2,
-                            Name = "Jantar"
-                        },
-                        new
-                        {
-                            Id = 3,
+                            Id = 1,
                             Name = "Banho"
                         },
                         new
                         {
-                            Id = 4,
-                            Name = "TrocaRoupas"
+                            Id = 2,
+                            Name = "Troca de Roupa"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Jantar"
                         });
                 });
 
@@ -189,10 +160,13 @@ namespace SistemaGestaoLar.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Justificativa")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("ServicoStatusId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ServicoTicketId")
+                    b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("TicketDiarioId")
@@ -201,8 +175,6 @@ namespace SistemaGestaoLar.Api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ServicoStatusId");
-
-                    b.HasIndex("ServicoTicketId");
 
                     b.HasIndex("TicketDiarioId");
 
@@ -232,12 +204,6 @@ namespace SistemaGestaoLar.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SistemaGestaoLar.Api.Entities.ServicoTicket", "ServicoTicket")
-                        .WithMany()
-                        .HasForeignKey("ServicoTicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SistemaGestaoLar.Api.Entities.TicketDiario", "TicketDiario")
                         .WithMany("Servicos")
                         .HasForeignKey("TicketDiarioId")
@@ -245,8 +211,6 @@ namespace SistemaGestaoLar.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("ServicoStatus");
-
-                    b.Navigation("ServicoTicket");
 
                     b.Navigation("TicketDiario");
                 });

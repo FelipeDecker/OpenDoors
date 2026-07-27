@@ -1,0 +1,9 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.git/
+**/.gitignore
+**/*.db
+**/*.db-shm
+**/*.db-wal
+**/node_modules/

@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using SistemaGestaoLar.Api.Entities;
-using SistemaGestaoLar.Api.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace SistemaGestaoLar.Api.Models
 {
@@ -27,8 +24,10 @@ namespace SistemaGestaoLar.Api.Models
 
         public int Id { get; set; }
 
+        [Required]
         public int MoradorId { get; set; }
 
+        [Required]
         public DateOnly DataServico { get; set; }
 
         [Required]

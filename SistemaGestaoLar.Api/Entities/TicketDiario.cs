@@ -6,8 +6,10 @@ namespace SistemaGestaoLar.Api.Entities
     {
         public int Id { get; set; }
 
+        [Required]
         public int MoradorId { get; set; }
 
+        [Required]
         public DateOnly DataServico { get; set; }
 
         [Required]

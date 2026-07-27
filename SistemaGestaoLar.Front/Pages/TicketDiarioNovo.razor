@@ -58,7 +58,6 @@ else
                         <tr>
                             <th>Serviço</th>
                             <th>Status</th>
-                            <th>Justificativa</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -67,7 +66,12 @@ else
                         {
                             <tr>
                                 <td>
-                                    <InputText class="form-control" @bind-Value="servico.NomeServico" placeholder="Nome do serviço" />
+                                    <InputSelect class="form-select" @bind-Value="servico.ServicoTicket">
+                                        @foreach (var nomeServico in Enum.GetValues<ServicoTicketEnum>())
+                                        {
+                                            <option value="@nomeServico">@nomeServico</option>
+                                        }
+                                    </InputSelect>
                                 </td>
                                 <td>
                                     <InputSelect class="form-select" @bind-Value="servico.Status">
@@ -76,9 +80,6 @@ else
                                             <option value="@status">@status</option>
                                         }
                                     </InputSelect>
-                                </td>
-                                <td>
-                                    <InputText class="form-control" @bind-Value="servico.Justificativa" placeholder="Justificativa (opcional)" />
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-outline-danger" @onclick="() => RemoverServico(servico)">Remover</button>
@@ -121,7 +122,11 @@ else
 
     private void AdicionarServico()
     {
-        modelo.Servicos.Add(new TicketServicoModel { NomeServico = string.Empty, Status = ServicoStatusEnum.Pendente });
+        modelo.Servicos.Add(new TicketServicoModel
+        {
+            ServicoTicket = Enum.GetValues<ServicoTicketEnum>().First(),
+            Status = ServicoStatusEnum.Pendente
+        });
     }
 
     private void RemoverServico(TicketServicoModel servico)

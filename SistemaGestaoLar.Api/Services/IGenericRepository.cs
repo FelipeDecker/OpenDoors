@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
 namespace SistemaGestaoLar.Api.Services
 {
     public interface IGenericRepository<T> where T : class
@@ -10,5 +7,6 @@ namespace SistemaGestaoLar.Api.Services
         Task<T> AddAsync(T entity);
         Task<T> UpdateAsync(T entity);
         Task<bool> DeleteAsync(int id);
+        IQueryable<T> GetQueryableNoTracking();
     }
 }

@@ -1,5 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using SistemaGestaoLar.Api.Entities;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SistemaGestaoLar.Api.Services
@@ -13,8 +15,26 @@ namespace SistemaGestaoLar.Api.Services
             _repo = repo;
         }
 
-        public Task<IEnumerable<TicketDiario>> GetAllAsync() => _repo.GetAllAsync();
-        public Task<TicketDiario> GetByIdAsync(int id) => _repo.GetByIdAsync(id);
+        public async Task<IEnumerable<TicketDiario>> GetAllAsync()
+        {
+            return await _repo.GetQueryableNoTracking()
+                .Include(t => t.Servicos)
+                    .ThenInclude(x => x.ServicoTicket)
+                .Include(t => t.Servicos)
+                    .ThenInclude(x => x.ServicoStatus)
+                .ToListAsync();
+        }
+
+        public async Task<TicketDiario> GetByIdAsync(int id)
+        {
+            return await _repo.GetQueryableNoTracking()
+                .Include(t => t.Servicos)
+                    .ThenInclude(x => x.ServicoTicket)
+                .Include(t => t.Servicos)
+                    .ThenInclude(x => x.ServicoStatus)
+                .FirstOrDefaultAsync(t => t.Id == id);
+        }
+
         public Task<TicketDiario> CreateAsync(TicketDiario entity) => _repo.AddAsync(entity);
         public Task<TicketDiario> UpdateAsync(TicketDiario entity) => _repo.UpdateAsync(entity);
         public Task<bool> DeleteAsync(int id) => _repo.DeleteAsync(id);

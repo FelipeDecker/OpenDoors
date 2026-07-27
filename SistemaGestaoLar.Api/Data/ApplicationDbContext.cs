@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SistemaGestaoLar.Api.Entities;
+using SistemaGestaoLar.Api.Enums;
+using System.Linq;
 
 namespace SistemaGestaoLar.Api.Data
 {
@@ -14,6 +16,7 @@ namespace SistemaGestaoLar.Api.Data
         public DbSet<Grupo> Grupos { get; set; }
         public DbSet<TicketDiario> TicketDiarios { get; set; }
         public DbSet<ServicoStatus> ServicosStatus { get; set; }
+        public DbSet<ServicoTicket> ServicosTicket { get; set; }
         public DbSet<TicketServico> TicketServicos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -53,10 +56,19 @@ namespace SistemaGestaoLar.Api.Data
                 .WithMany()
                 .HasForeignKey(ts => ts.ServicoStatusId);
 
+            modelBuilder.Entity<TicketServico>()
+                .HasOne(ts => ts.ServicoTicket)
+                .WithMany()
+                .HasForeignKey(ts => ts.ServicoTicketId);
+
             modelBuilder.Entity<ServicoStatus>().HasData(
-                new ServicoStatus { Id = 1, Name = "Banho" },
-                new ServicoStatus { Id = 2, Name = "Troca de Roupa" },
-                new ServicoStatus { Id = 3, Name = "Jantar" }
+                Enum.GetValues<ServicoStatusEnum>()
+                    .Select(status => new ServicoStatus { Id = (int)status + 1, Name = status.ToString() })
+            );
+
+            modelBuilder.Entity<ServicoTicket>().HasData(
+                Enum.GetValues<ServicoTicketEnum>()
+                    .Select(servico => new ServicoTicket { Id = (int)servico + 1, Name = servico.ToString() })
             );
         }
     }

@@ -10,7 +10,6 @@ namespace SistemaGestaoLar.Api.Entities
         [Required]
         public string Nome { get; set; }
 
-        [Required]
         public string Descricao { get; set; }
 
         public List<Ajudante> Ajudantes { get; set; } = new();

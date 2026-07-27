@@ -32,6 +32,7 @@ else
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
+                    <th scope="col">Id</th>
                     <th scope="col">Morador</th>
                     <th scope="col">Data do serviço</th>
                     <th scope="col">Serviços</th>
@@ -42,6 +43,7 @@ else
                 @foreach (var ticket in tickets)
                 {
                     <tr>
+                        <td>@ticket.Id</td>
                         <td>@ObterNomeMorador(ticket.MoradorId)</td>
                         <td>@ticket.DataServico.ToString("dd/MM/yyyy")</td>
                         <td>@ObterResumoServicos(ticket)</td>

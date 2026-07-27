@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using SistemaGestaoLar.Api.Entities;
 using SistemaGestaoLar.Api.Enums;
@@ -11,21 +12,22 @@ namespace SistemaGestaoLar.Api.Models
         public TicketServicoModel(TicketServico entidade)
         {
             Id = entidade.Id;
-            ServicoStatusId = entidade.ServicoStatusId;
-            NomeServico = entidade.ServicoStatus?.Name;
-            Status = entidade.Status;
-            Justificativa = entidade.Justificativa;
+            NomeServico = entidade.ServicoTicket?.Name;
+            ServicoTicket = Enum.TryParse<ServicoTicketEnum>(entidade.ServicoTicket?.Name, out var servico)
+                ? servico
+                : default;
+            Status = Enum.TryParse<ServicoStatusEnum>(entidade.ServicoStatus?.Name, out var status)
+                ? status
+                : default;
         }
 
         public int Id { get; set; }
 
         [Required]
-        public int ServicoStatusId { get; set; }
-
+        public ServicoTicketEnum ServicoTicket { get; set; }
         public string NomeServico { get; set; }
 
+        [Required]
         public ServicoStatusEnum Status { get; set; }
-
-        public string Justificativa { get; set; }
     }
 }
