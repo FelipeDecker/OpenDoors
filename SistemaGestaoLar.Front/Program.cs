@@ -21,5 +21,6 @@ builder.Services.AddScoped<IAjudantesClient>(sp => new AjudantesClient(gestaoLar
 builder.Services.AddScoped<IGruposClient>(sp => new GruposClient(gestaoLarApi, sp.GetRequiredService<HttpClient>()));
 builder.Services.AddScoped<IMoradoresClient>(sp => new MoradoresClient(gestaoLarApi, sp.GetRequiredService<HttpClient>()));
 builder.Services.AddScoped<ITicketDiariosClient>(sp => new TicketDiariosClient(gestaoLarApi, sp.GetRequiredService<HttpClient>()));
+builder.Services.AddScoped<IEnumsClient>(sp => new EnumsClient(gestaoLarApi, sp.GetRequiredService<HttpClient>()));
 
 await builder.Build().RunAsync();

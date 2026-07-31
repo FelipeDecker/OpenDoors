@@ -65,6 +65,25 @@ namespace SistemaGestaoLar.Api.Client.Contracts
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial interface IEnumsClient
+    {
+        /// <exception cref="GestaoLarException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<EnumItemModel>> GetServicosTicketAsync();
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="GestaoLarException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<EnumItemModel>> GetServicosTicketAsync(System.Threading.CancellationToken cancellationToken);
+
+        /// <exception cref="GestaoLarException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<EnumItemModel>> GetServicosStatusAsync();
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="GestaoLarException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<EnumItemModel>> GetServicosStatusAsync(System.Threading.CancellationToken cancellationToken);
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial interface IGruposClient
     {
         /// <exception cref="GestaoLarException">A server side error occurred.</exception>
@@ -253,6 +272,18 @@ namespace SistemaGestaoLar.Api.Client.Contracts
 
         [System.Text.Json.Serialization.JsonPropertyName("errors")]
         public string Errors { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class EnumItemModel
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("id")]
+        public int Id { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("nome")]
+        public string Nome { get; set; }
 
     }
 

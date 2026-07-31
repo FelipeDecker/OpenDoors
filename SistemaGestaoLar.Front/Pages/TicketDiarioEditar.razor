@@ -2,6 +2,7 @@
 @using System.Linq
 @inject ITicketDiariosClient TicketDiariosClient
 @inject IMoradoresClient MoradoresClient
+@inject IEnumsClient EnumsClient
 @inject NavigationManager NavigationManager
 
 <PageTitle>Editar ticket diário</PageTitle>
@@ -43,8 +44,13 @@ else
         <div class="mb-3">
             <div class="d-flex justify-content-between align-items-center">
                 <label class="form-label mb-0">Serviços</label>
-                <button type="button" class="btn btn-sm btn-outline-primary" @onclick="AdicionarServico">Adicionar serviço</button>
+                <button type="button" class="btn btn-sm btn-outline-primary" @onclick="AdicionarServico" disabled="@(!PodeAdicionarServico)">Adicionar serviço</button>
             </div>
+
+            @if (!PodeAdicionarServico)
+            {
+                <p class="text-muted mt-2">Quantidade máxima de serviços atingida.</p>
+            }
 
             @if (modelo.Servicos.Count == 0)
             {
@@ -63,12 +69,12 @@ else
                     <tbody>
                         @foreach (var servico in modelo.Servicos)
                         {
-                            <tr>
+                            <tr @key="servico">
                                 <td>
                                     <InputSelect class="form-select" @bind-Value="servico.ServicoTicket">
-                                        @foreach (var nomeServico in Enum.GetValues<ServicoTicketEnum>())
+                                        @foreach (var nomeServico in ServicosDisponiveisPara(servico))
                                         {
-                                            <option value="@nomeServico">@nomeServico</option>
+                                            <option @key="nomeServico" value="@nomeServico">@ObterNomeServico(nomeServico)</option>
                                         }
                                     </InputSelect>
                                 </td>
@@ -76,7 +82,7 @@ else
                                     <InputSelect class="form-select" @bind-Value="servico.Status">
                                         @foreach (var status in Enum.GetValues<ServicoStatusEnum>())
                                         {
-                                            <option value="@status">@status</option>
+                                            <option value="@status">@ObterNomeStatus(status)</option>
                                         }
                                     </InputSelect>
                                 </td>
@@ -101,10 +107,12 @@ else
 
     private TicketDiarioModel modelo = new();
     private ICollection<MoradorModel> moradores = [];
+    private Dictionary<int, string> nomesServicoTicket = new();
+    private Dictionary<int, string> nomesServicoStatus = new();
     private DateTime dataServico = DateTime.Today;
     private bool carregando = true;
     private bool salvando;
-    private string? mensagemErro;
+    private string mensagemErro;
 
     protected override async Task OnInitializedAsync()
     {
@@ -113,6 +121,12 @@ else
             moradores = await MoradoresClient.GetAsync();
             modelo = await TicketDiariosClient.GetByIdAsync(Id);
             dataServico = modelo.DataServico.Date;
+
+            var servicosTicket = await EnumsClient.GetServicosTicketAsync();
+            nomesServicoTicket = servicosTicket.ToDictionary(item => item.Id, item => item.Nome);
+
+            var servicosStatus = await EnumsClient.GetServicosStatusAsync();
+            nomesServicoStatus = servicosStatus.ToDictionary(item => item.Id, item => item.Nome);
         }
         catch (Exception)
         {
@@ -124,11 +138,29 @@ else
         }
     }
 
+    private string ObterNomeServico(ServicoTicketEnum servico) =>
+        nomesServicoTicket.TryGetValue((int)servico, out var nome) ? nome : servico.ToString();
+
+    private string ObterNomeStatus(ServicoStatusEnum status) =>
+        nomesServicoStatus.TryGetValue((int)status, out var nome) ? nome : status.ToString();
+
+    private static readonly int TotalServicosDisponiveis = Enum.GetValues<ServicoTicketEnum>().Length;
+
+    private bool PodeAdicionarServico => modelo.Servicos.Count < TotalServicosDisponiveis;
+
     private void AdicionarServico()
     {
+        if (!PodeAdicionarServico)
+        {
+            return;
+        }
+
+        var servicosUtilizados = modelo.Servicos.Select(s => s.ServicoTicket).ToHashSet();
+        var proximoServico = Enum.GetValues<ServicoTicketEnum>().First(s => !servicosUtilizados.Contains(s));
+
         modelo.Servicos.Add(new TicketServicoModel
         {
-            ServicoTicket = Enum.GetValues<ServicoTicketEnum>().First(),
+            ServicoTicket = proximoServico,
             Status = ServicoStatusEnum.Pendente
         });
     }
@@ -136,6 +168,17 @@ else
     private void RemoverServico(TicketServicoModel servico)
     {
         modelo.Servicos.Remove(servico);
+    }
+
+    private IEnumerable<ServicoTicketEnum> ServicosDisponiveisPara(TicketServicoModel servico)
+    {
+        var servicosUtilizadosPorOutros = modelo.Servicos
+            .Where(s => s != servico)
+            .Select(s => s.ServicoTicket)
+            .ToHashSet();
+
+        return Enum.GetValues<ServicoTicketEnum>()
+            .Where(s => s == servico.ServicoTicket || !servicosUtilizadosPorOutros.Contains(s));
     }
 
     private async Task SalvarAsync()
