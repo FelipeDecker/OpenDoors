@@ -34,7 +34,6 @@ else
                     <th scope="col">Data de nascimento</th>
                     <th scope="col">Contato de emergência</th>
                     <th scope="col">Observações</th>
-                    <th scope="col">Histórico de acolhimento</th>
                     <th scope="col">Ações</th>
                 </tr>
             </thead>
@@ -46,7 +45,6 @@ else
                         <td>@(morador.DataNascimento?.ToString("dd/MM/yyyy") ?? "")</td>
                         <td>@morador.ContatoEmergencia</td>
                         <td>@morador.Observacoes</td>
-                        <td>@morador.HistoricoAcolhimento</td>
                         <td>
                             <button type="button" class="btn btn-sm btn-outline-primary me-1" @onclick="() => EditarMorador(morador.Id)">Editar</button>
                             <button type="button" class="btn btn-sm btn-outline-danger" @onclick="() => ExcluirMoradorAsync(morador)">Excluir</button>

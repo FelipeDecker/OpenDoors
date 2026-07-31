@@ -39,11 +39,6 @@ else
             <InputTextArea id="observacoes" class="form-control" @bind-Value="modelo.Observacoes" />
         </div>
 
-        <div class="mb-3">
-            <label for="historicoAcolhimento" class="form-label">Histórico de acolhimento</label>
-            <InputTextArea id="historicoAcolhimento" class="form-control" @bind-Value="modelo.HistoricoAcolhimento" />
-        </div>
-
         <button type="submit" class="btn btn-primary" disabled="@salvando">Salvar</button>
         <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
     </EditForm>

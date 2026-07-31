@@ -35,9 +35,6 @@ namespace SistemaGestaoLar.Api.Data
 
                 entity.Property(m => m.Observacoes)
                     .IsRequired(false);
-
-                entity.Property(m => m.HistoricoAcolhimento)
-                    .IsRequired(false);
             });
 
             modelBuilder.Entity<Ajudante>()

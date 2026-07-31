@@ -14,7 +14,6 @@ namespace SistemaGestaoLar.Api.Models
             DataNascimento = entidade.DataNascimento;
             ContatoEmergencia = entidade.ContatoEmergencia;
             Observacoes = entidade.Observacoes;
-            HistoricoAcolhimento = entidade.HistoricoAcolhimento;
         }
 
         public int Id { get; set; }
@@ -27,7 +26,5 @@ namespace SistemaGestaoLar.Api.Models
         public string ContatoEmergencia { get; set; }
 
         public string Observacoes { get; set; }
-
-        public string HistoricoAcolhimento { get; set; }
     }
 }

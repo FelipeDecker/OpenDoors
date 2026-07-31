@@ -15,7 +15,5 @@ namespace SistemaGestaoLar.Api.Entities
         public string ContatoEmergencia { get; set; }
 
         public string Observacoes { get; set; }
-
-        public string HistoricoAcolhimento { get; set; }
     }
 }

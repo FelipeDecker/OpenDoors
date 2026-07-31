@@ -51,8 +51,7 @@ namespace SistemaGestaoLar.Api.Controllers
                 NomeCompleto = model.NomeCompleto,
                 DataNascimento = model.DataNascimento,
                 ContatoEmergencia = model.ContatoEmergencia,
-                Observacoes = model.Observacoes,
-                HistoricoAcolhimento = model.HistoricoAcolhimento
+                Observacoes = model.Observacoes
             };
             var created = await _service.CreateAsync(entidade);
             return Ok(new MoradorModel(created));
@@ -70,7 +69,6 @@ namespace SistemaGestaoLar.Api.Controllers
             entidade.DataNascimento = model.DataNascimento;
             entidade.ContatoEmergencia = model.ContatoEmergencia;
             entidade.Observacoes = model.Observacoes;
-            entidade.HistoricoAcolhimento = model.HistoricoAcolhimento;
             var updated = await _service.UpdateAsync(entidade);
             return Ok(new MoradorModel(updated));
         }
