@@ -15,4 +15,8 @@
     <ProjectReference Include="..\SistemaGestaoLar.Api.Client\SistemaGestaoLar.Api.Client.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\sample-data\" />
+  </ItemGroup>
+
 </Project>

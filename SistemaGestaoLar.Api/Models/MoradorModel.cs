@@ -1,6 +1,5 @@
-using System;
-using System.ComponentModel.DataAnnotations;
 using SistemaGestaoLar.Api.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace SistemaGestaoLar.Api.Models
 {
@@ -25,7 +24,7 @@ namespace SistemaGestaoLar.Api.Models
 
         public DateTime? DataNascimento { get; set; }
 
-        public string? ContatoEmergencia { get; set; }
+        public string ContatoEmergencia { get; set; }
 
         public string Observacoes { get; set; }
 

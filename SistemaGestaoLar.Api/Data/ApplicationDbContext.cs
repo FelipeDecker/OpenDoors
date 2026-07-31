@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SistemaGestaoLar.Api.Entities;
 using SistemaGestaoLar.Api.Enums;
-using System.Linq;
 
 namespace SistemaGestaoLar.Api.Data
 {

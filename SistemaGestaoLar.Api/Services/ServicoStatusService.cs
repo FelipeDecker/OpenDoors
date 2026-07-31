@@ -1,6 +1,4 @@
 using SistemaGestaoLar.Api.Entities;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace SistemaGestaoLar.Api.Services
 {

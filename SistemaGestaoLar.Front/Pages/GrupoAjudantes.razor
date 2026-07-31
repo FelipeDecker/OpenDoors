@@ -78,13 +78,13 @@ else
     [Parameter]
     public int Id { get; set; }
 
-    private GrupoModel? grupo;
+    private GrupoModel grupo;
     private List<AjudanteModel> ajudantesDoGrupo = [];
     private List<AjudanteModel> ajudantesDisponiveis = [];
     private int ajudanteSelecionadoId;
     private bool carregando = true;
     private bool adicionando;
-    private string? mensagemErro;
+    private string mensagemErro;
 
     protected override async Task OnInitializedAsync()
     {

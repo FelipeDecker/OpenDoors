@@ -48,7 +48,7 @@ namespace SistemaGestaoLar.Api.Controllers
             {
                 MoradorId = model.MoradorId,
                 DataServico = model.DataServico,
-                Servicos = new System.Collections.Generic.List<TicketServico>()
+                Servicos = new List<TicketServico>()
             };
             if (model.Servicos != null)
             {
@@ -71,7 +71,7 @@ namespace SistemaGestaoLar.Api.Controllers
             if (entidade == null) return BadRequest(new ErrorResponseModel { Errors = "Ticket não encontrado" });
             entidade.MoradorId = model.MoradorId;
             entidade.DataServico = model.DataServico;
-            entidade.Servicos = new System.Collections.Generic.List<TicketServico>();
+            entidade.Servicos = new List<TicketServico>();
             if (model.Servicos != null)
             {
                 foreach (var s in model.Servicos)
