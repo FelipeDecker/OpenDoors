@@ -42,6 +42,13 @@ namespace SistemaGestaoLar.Api.Data
                 .WithMany(g => g.Ajudantes)
                 .UsingEntity(j => j.ToTable("AjudanteGrupo"));
 
+            modelBuilder.Entity<TicketDiario>()
+                .HasOne<Morador>()
+                .WithMany()
+                .HasForeignKey(t => t.MoradorId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<TicketServico>()
                 .HasOne(ts => ts.TicketDiario)
                 .WithMany(t => t.Servicos)

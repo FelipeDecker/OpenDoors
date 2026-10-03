@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SistemaGestaoLar.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 // Configure EF Core with SQLite
-builder.Services.AddDbContext<SistemaGestaoLar.Api.Data.ApplicationDbContext>(options =>
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("Default") ?? "Data Source=database.db"));
 
 // Register generic repository and services
@@ -16,12 +17,14 @@ builder.Services.AddScoped<SistemaGestaoLar.Api.Services.AjudanteService>();
 builder.Services.AddScoped<SistemaGestaoLar.Api.Services.GrupoService>();
 builder.Services.AddScoped<SistemaGestaoLar.Api.Services.TicketDiarioService>();
 builder.Services.AddScoped<SistemaGestaoLar.Api.Services.ServicoStatusService>();
+builder.Services.AddScoped<SistemaGestaoLar.Api.Services.RelatorioService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Front", policy =>
         policy.WithOrigins("https://localhost:7060", "http://localhost:5105")
             .AllowAnyHeader()
-            .AllowAnyMethod());
+            .AllowAnyMethod()
+            .WithExposedHeaders("Content-Disposition"));
 });
 
 builder.Services.AddOpenApiDocument(document =>
@@ -38,7 +41,7 @@ var app = builder.Build();
 if (!app.Environment.IsEnvironment("NSwagGenerator"))
 {
     using var scope = app.Services.CreateScope();
-    var db = scope.ServiceProvider.GetRequiredService<SistemaGestaoLar.Api.Data.ApplicationDbContext>();
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     db.Database.Migrate();
 }
 

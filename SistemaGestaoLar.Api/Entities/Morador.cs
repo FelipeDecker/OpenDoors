@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace SistemaGestaoLar.Api.Entities
@@ -15,5 +14,7 @@ namespace SistemaGestaoLar.Api.Entities
         public string ContatoEmergencia { get; set; }
 
         public string Observacoes { get; set; }
+
+        public DateTime DataCadastro { get; set; }
     }
 }

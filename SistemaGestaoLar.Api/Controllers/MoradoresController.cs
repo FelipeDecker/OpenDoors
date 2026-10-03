@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using SistemaGestaoLar.Api.Entities;
 using SistemaGestaoLar.Api.Models;
 using SistemaGestaoLar.Api.Services;
-using SistemaGestaoLar.Api.Entities;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace SistemaGestaoLar.Api.Controllers
 {
@@ -12,10 +10,21 @@ namespace SistemaGestaoLar.Api.Controllers
     public class MoradoresController : ControllerBase
     {
         private readonly MoradorService _service;
+        private readonly RelatorioService _relatorioService;
 
-        public MoradoresController(MoradorService service)
+        public MoradoresController(MoradorService service, RelatorioService relatorioService)
         {
             _service = service;
+            _relatorioService = relatorioService;
+        }
+
+        [HttpGet("relatorio-mensal")]
+        [ProducesResponseType(typeof(FileContentResult), 200, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")]
+        [ProducesResponseType(typeof(ErrorResponseModel), 500)]
+        public async Task<IActionResult> RelatorioMensal()
+        {
+            var (conteudo, nomeArquivo) = await _relatorioService.GerarRelatorioMesAnteriorAsync();
+            return File(conteudo, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", nomeArquivo);
         }
 
         [HttpGet]
@@ -78,6 +87,8 @@ namespace SistemaGestaoLar.Api.Controllers
         [ProducesResponseType(typeof(ErrorResponseModel), 400)]
         public async Task<IActionResult> Delete(int id)
         {
+            if (await _service.PossuiTicketsAsync(id))
+                return BadRequest(new ErrorResponseModel { Errors = "Não é possível excluir o morador pois ele possui tickets diários associados" });
             var ok = await _service.DeleteAsync(id);
             if (!ok) return BadRequest(new ErrorResponseModel { Errors = "Morador não encontrado" });
             return Ok();

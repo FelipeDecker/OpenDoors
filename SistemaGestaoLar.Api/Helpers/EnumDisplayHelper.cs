@@ -12,7 +12,7 @@ namespace SistemaGestaoLar.Api.Helpers
                 .ToList();
         }
 
-        private static string GetDisplayName<TEnum>(TEnum valor) where TEnum : struct, Enum
+        public static string GetDisplayName<TEnum>(TEnum valor) where TEnum : struct, Enum
         {
             var membro = typeof(TEnum).GetMember(valor.ToString()).FirstOrDefault();
             var display = membro?.GetCustomAttributes(typeof(DisplayAttribute), false)

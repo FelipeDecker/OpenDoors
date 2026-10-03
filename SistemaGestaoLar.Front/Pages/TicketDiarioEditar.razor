@@ -27,13 +27,7 @@ else
 
         <div class="mb-3">
             <label for="morador" class="form-label">Morador</label>
-            <InputSelect id="morador" class="form-select" @bind-Value="modelo.MoradorId">
-                <option value="0">Selecione um morador</option>
-                @foreach (var morador in moradores)
-                {
-                    <option value="@morador.Id">@morador.NomeCompleto</option>
-                }
-            </InputSelect>
+            <input id="morador" class="form-control" value="@ObterNomeMorador()" readonly disabled />
         </div>
 
         <div class="mb-3">
@@ -138,6 +132,14 @@ else
         }
     }
 
+    private string ObterNomeMorador()
+    {
+        var morador = moradores.FirstOrDefault(m => m.Id == modelo.MoradorId);
+        return morador is not null
+            ? $"{morador.Id} - {morador.NomeCompleto}"
+            : $"{modelo.MoradorId} - (morador não encontrado)";
+    }
+
     private string ObterNomeServico(ServicoTicketEnum servico) =>
         nomesServicoTicket.TryGetValue((int)servico, out var nome) ? nome : servico.ToString();
 
@@ -183,12 +185,6 @@ else
 
     private async Task SalvarAsync()
     {
-        if (modelo.MoradorId <= 0)
-        {
-            mensagemErro = "Selecione um morador.";
-            return;
-        }
-
         if (modelo.Servicos.Count == 0)
         {
             mensagemErro = "Adicione ao menos um serviço.";

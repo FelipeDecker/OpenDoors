@@ -30,6 +30,7 @@ else
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
+                    <th scope="col">Id</th>
                     <th scope="col">Nome</th>
                     <th scope="col">Email</th>
                     <th scope="col">Telefone</th>
@@ -41,6 +42,7 @@ else
                 @foreach (var ajudante in ajudantes)
                 {
                     <tr>
+                        <td>@ajudante.Id</td>
                         <td>@ajudante.Nome</td>
                         <td>@ajudante.Email</td>
                         <td>@ajudante.Telefone</td>

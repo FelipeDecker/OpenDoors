@@ -8,5 +8,7 @@ namespace SistemaGestaoLar.Api.Services
         Task<T> UpdateAsync(T entity);
         Task<bool> DeleteAsync(int id);
         IQueryable<T> GetQueryableNoTracking();
+        IQueryable<T> GetQueryable();
+        Task SaveChangesAsync();
     }
 }

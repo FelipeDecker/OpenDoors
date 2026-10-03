@@ -29,6 +29,18 @@
         <span class="dismiss">🗙</span>
     </div>
     <script src="_framework/blazor.webassembly#[.{fingerprint}].js"></script>
+    <script>
+        window.baixarArquivo = async (nomeArquivo, streamRef) => {
+            const buffer = await streamRef.arrayBuffer();
+            const url = URL.createObjectURL(new Blob([buffer]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = nomeArquivo ?? '';
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+        };
+    </script>
 </body>
 
 </html>

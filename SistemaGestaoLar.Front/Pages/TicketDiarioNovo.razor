@@ -1,5 +1,4 @@
 @page "/tickets-diarios/novo"
-@using System.ComponentModel.DataAnnotations
 @inject ITicketDiariosClient TicketDiariosClient
 @inject IMoradoresClient MoradoresClient
 @inject IEnumsClient EnumsClient
@@ -32,7 +31,7 @@ else
                 <option value="0">Selecione um morador</option>
                 @foreach (var morador in moradores)
                 {
-                    <option value="@morador.Id">@morador.NomeCompleto</option>
+                    <option value="@morador.Id">@morador.Id - @morador.NomeCompleto</option>
                 }
             </InputSelect>
         </div>

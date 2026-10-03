@@ -49,5 +49,15 @@ namespace SistemaGestaoLar.Api.Services
         {
             return _db.Set<T>().AsNoTracking();
         }
+
+        public IQueryable<T> GetQueryable()
+        {
+            return _db.Set<T>();
+        }
+
+        public Task SaveChangesAsync()
+        {
+            return _db.SaveChangesAsync();
+        }
     }
 }

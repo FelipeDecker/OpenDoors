@@ -85,7 +85,9 @@ else
 
     private string ObterNomeMorador(int moradorId)
     {
-        return nomesMoradores.TryGetValue(moradorId, out var nome) ? nome : $"Morador #{moradorId}";
+        return nomesMoradores.TryGetValue(moradorId, out var nome)
+            ? $"{moradorId} - {nome}"
+            : $"{moradorId} - (morador não encontrado)";
     }
 
     private string ObterResumoServicos(TicketDiarioModel ticket)

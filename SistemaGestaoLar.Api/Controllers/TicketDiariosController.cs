@@ -10,10 +10,12 @@ namespace SistemaGestaoLar.Api.Controllers
     public class TicketDiariosController : ControllerBase
     {
         private readonly TicketDiarioService _service;
+        private readonly MoradorService _moradorService;
 
-        public TicketDiariosController(TicketDiarioService service)
+        public TicketDiariosController(TicketDiarioService service, MoradorService moradorService)
         {
             _service = service;
+            _moradorService = moradorService;
         }
 
         [HttpGet]
@@ -44,6 +46,8 @@ namespace SistemaGestaoLar.Api.Controllers
         public async Task<IActionResult> Create([FromBody] TicketDiarioModel model)
         {
             if (!ModelState.IsValid) return BadRequest(new ErrorResponseModel { Errors = "Modelo inválido" });
+            if (PossuiServicosDuplicados(model)) return BadRequest(new ErrorResponseModel { Errors = ErroServicoDuplicado });
+            if (!await _moradorService.ExisteAsync(model.MoradorId)) return BadRequest(new ErrorResponseModel { Errors = "Morador não encontrado" });
             var entidade = new TicketDiario
             {
                 MoradorId = model.MoradorId,
@@ -67,21 +71,19 @@ namespace SistemaGestaoLar.Api.Controllers
         public async Task<IActionResult> Update(int id, [FromBody] TicketDiarioModel model)
         {
             if (!ModelState.IsValid) return BadRequest(new ErrorResponseModel { Errors = "Modelo inválido" });
-            var entidade = await _service.GetByIdAsync(id);
-            if (entidade == null) return BadRequest(new ErrorResponseModel { Errors = "Ticket não encontrado" });
-            entidade.MoradorId = model.MoradorId;
-            entidade.DataServico = model.DataServico;
-            entidade.Servicos = new List<TicketServico>();
-            if (model.Servicos != null)
-            {
-                foreach (var s in model.Servicos)
-                {
-                    entidade.Servicos.Add(new TicketServico { ServicoTicketId = (int)s.ServicoTicket + 1, ServicoStatusId = (int)s.Status + 1 });
-                }
-            }
-            var updated = await _service.UpdateAsync(entidade);
+            if (PossuiServicosDuplicados(model)) return BadRequest(new ErrorResponseModel { Errors = ErroServicoDuplicado });
+            var servicos = (model.Servicos ?? new List<TicketServicoModel>())
+                .Select(s => new TicketServico { ServicoTicketId = (int)s.ServicoTicket + 1, ServicoStatusId = (int)s.Status + 1 });
+            var updated = await _service.UpdateAsync(id, model.DataServico, servicos);
+            if (updated == null) return BadRequest(new ErrorResponseModel { Errors = "Ticket não encontrado" });
             return Ok(new TicketDiarioModel(updated));
         }
+
+        private const string ErroServicoDuplicado = "O ticket não pode ter mais de um serviço do mesmo tipo";
+
+        private static bool PossuiServicosDuplicados(TicketDiarioModel model) =>
+            model.Servicos != null &&
+            model.Servicos.GroupBy(s => s.ServicoTicket).Any(g => g.Count() > 1);
 
         [HttpDelete("{id:int}")]
         [ProducesResponseType(typeof(void), 200)]
